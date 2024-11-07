@@ -1,14 +1,14 @@
-package store;
+package store.product;
 
 import java.util.Objects;
 
 public class Product {
     private String name;
-    private int price;
-    private int quantity;
+    private Price price;
+    private final Quantity quantity;
     private String description;
 
-    public Product(String name, int price, int quantity, String description) {
+    public Product(String name, Price price, Quantity quantity, String description) {
         this.name = name;
         this.quantity = quantity;
         this.price = price;
@@ -17,10 +17,9 @@ public class Product {
 
     public static Product from(String input) {
         input = hasZeroQuantity(input);
-        System.out.println(input);
         String[] productInfos = input.split(" ");
 
-        return new Product(productInfos[0], covertNumber(productInfos[1]), covertNumber(productInfos[2]), productInfos[3]);
+        return new Product(productInfos[0], Price.from(productInfos[1]), Quantity.from(productInfos[2]), productInfos[3]);
     }
 
     private static String hasZeroQuantity(String input) {
@@ -30,27 +29,17 @@ public class Product {
         return input;
     }
 
-    private static int covertNumber(String productInfos) {
-        String number = productInfos.replaceAll("[^0-9]", "");
-        System.out.println(number);
-        return Integer.parseInt(number);
-    }
-
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         Product product = (Product) o;
-        return quantity == product.quantity && price == product.price && Objects.equals(name, product.name) && Objects.equals(description, product.description);
+        return Objects.equals(name, product.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, quantity, price, description);
+        return Objects.hash(name);
     }
 
     @Override
