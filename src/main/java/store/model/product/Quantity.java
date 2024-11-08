@@ -1,4 +1,4 @@
-package store.product;
+package store.model.product;
 
 import java.util.Objects;
 
@@ -37,6 +37,10 @@ public class Quantity {
         if(quantity < QUANTITY_MIN_VALUE) {
            throw new IllegalArgumentException(QUANTITY_COUNT_ERROR_MESSAGE);
         }
+    }
+
+    public int getQuantity() {
+        return quantity;
     }
 
     @Override

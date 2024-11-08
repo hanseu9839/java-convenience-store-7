@@ -1,4 +1,4 @@
-package store.product;
+package store.model.product;
 
 import java.util.Objects;
 
