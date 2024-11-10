@@ -5,12 +5,12 @@ import java.util.List;
 import java.util.Objects;
 
 public class Products {
-
     private final List<Product> products;
 
     public Products(List<Product> products) {
         this.products = products;
     }
+
 
     public void add(Product product) {
         products.add(product);
@@ -23,7 +23,7 @@ public class Products {
 
     public void sale(int purchaseProductCount) {
     // 7개 - 10개\
-        purchaseProductCount -= salePromotionProduct(purchaseProductCount);;
+        purchaseProductCount -= salePromotionProduct(purchaseProductCount);
         saleNotPromotionProduct(purchaseProductCount);
     }
 
@@ -88,4 +88,12 @@ public class Products {
     public int hashCode() {
         return Objects.hash(products);
     }
+
+    @Override
+    public String toString() {
+        return "Products{" +
+                "products=" + products +
+                '}';
+    }
+
 }

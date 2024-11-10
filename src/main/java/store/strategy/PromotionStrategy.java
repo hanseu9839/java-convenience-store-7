@@ -2,5 +2,5 @@ package store.strategy;
 
 @FunctionalInterface
 public interface PromotionStrategy {
-    int event(String input);
+    int promotion(String event, boolean isPromotion, int saleQuantity);
 }
