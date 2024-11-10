@@ -1,14 +1,20 @@
 package store.model.product;
 
+import store.model.promotion.Promotions;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
 public class Products {
-    private final List<Product> products;
 
-    public Products(List<Product> products) {
+    private final List<Product> products;
+    private final Promotions promotions;
+
+
+    public Products(List<Product> products, Promotions promotions) {
         this.products = products;
+        this.promotions = promotions;
     }
 
 
@@ -22,14 +28,14 @@ public class Products {
     }
 
     public void sale(int purchaseProductCount) {
-    // 7개 - 10개\
+        // 7개 - 10개\
         purchaseProductCount -= salePromotionProduct(purchaseProductCount);
         saleNotPromotionProduct(purchaseProductCount);
     }
 
     private int salePromotionProduct(int purchaseProductCount) {
         int count = 0;
-        for(Product product : products) {
+        for (Product product : products) {
             count += salePromotionProductCount(product, purchaseProductCount);
             purchaseProductCount -= count;
         }
@@ -37,12 +43,12 @@ public class Products {
     }
 
     private int salePromotionProductCount(Product product, int purchaseProductCount) {
-        if(product.isPromotion() && product.getStoreQuantity() > 0 && product.getStoreQuantity() >= purchaseProductCount) {
+        if (product.getPromotionName() != null && product.getStoreQuantity() > 0 && product.getStoreQuantity() >= purchaseProductCount) {
             product.sale(product, purchaseProductCount);
             return purchaseProductCount;
         }
 
-        if(product.isPromotion() && product.getStoreQuantity() > 0) {
+        if (product.getPromotionName() != null && product.getStoreQuantity() > 0) {
             int productSaleCount = product.getStoreQuantity();
             product.sale(product, productSaleCount);
             return productSaleCount;
@@ -53,7 +59,7 @@ public class Products {
 
     private int saleNotPromotionProduct(int purchaseProductCount) {
         int count = 0;
-        for(Product product : products) {
+        for (Product product : products) {
             count += saleNotPromotionProductCount(product, purchaseProductCount);
             purchaseProductCount -= count;
         }
@@ -61,15 +67,28 @@ public class Products {
     }
 
     private int saleNotPromotionProductCount(Product product, int purchaseProductCount) {
-        if(!product.isPromotion() && product.getStoreQuantity() > 0 && product.getStoreQuantity() >= purchaseProductCount) {
+        if (product.getPromotionName() == null && product.getStoreQuantity() > 0 && product.getStoreQuantity() >= purchaseProductCount) {
             product.sale(product, purchaseProductCount);
         }
-        if(!product.isPromotion() && product.getStoreQuantity() > 0) {
+        if (product.getPromotionName() == null && product.getStoreQuantity() > 0) {
             int productSaleCount = product.getStoreQuantity();
             product.sale(product, productSaleCount);
             return productSaleCount;
         }
         return 0;
+    }
+
+    public int isPromotionButNotDiscountProductCount() {
+        int notDiscountProductCount = 0;
+        for (Product product : products) {
+            notDiscountProductCount += promotions.isPromotionButNotDiscountProductCount(product);
+        }
+        return notDiscountProductCount;
+    }
+
+    public boolean isPromotions() {
+        return products.stream()
+                .anyMatch(Product::isPromotion);
     }
 
     public List<Product> getProducts() {
@@ -93,6 +112,7 @@ public class Products {
     public String toString() {
         return "Products{" +
                 "products=" + products +
+                ", promotions=" + promotions +
                 '}';
     }
 

@@ -1,12 +1,14 @@
 package store.model.promotion;
 
+import store.model.product.Product;
 import store.model.product.Quantity;
+import store.strategy.PromotionStrategy;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Objects;
 
-public class Promotion {
+public class Promotion implements PromotionStrategy {
     private final String name;
     private final Quantity buy;
     private final Quantity get;
@@ -42,7 +44,19 @@ public class Promotion {
         return name;
     }
 
+    @Override
+    public int promotion(String event, int saleQuantity) {
+        return 0;
+    }
 
+    public int isPromotionButNotDiscountProductCount(Product product) {
+        System.out.println(product);
+        System.out.println(product.getSaleQuantity());
+        System.out.println(buy.getQuantity());
+        System.out.println(get.getQuantity());
+        System.out.println(product.getSaleQuantity() % buy.getQuantity() + get.getQuantity());
+       return product.getSaleQuantity() % buy.getQuantity() + get.getQuantity();
+    }
 
     @Override
     public boolean equals(Object o) {

@@ -1,5 +1,7 @@
 package store.model.product;
 
+import org.junit.platform.commons.util.StringUtils;
+
 import java.util.Objects;
 
 public class Product {
@@ -8,26 +10,19 @@ public class Product {
     private Quantity storeQuantity;
     private Quantity saleQuantity;
     private String promotionName;
-    private boolean isPromotion;
 
-    public Product(String name, Price price, Quantity storeQuantity, Quantity saleQuantity, String promotionName, boolean isPromotion) {
+    public Product(String name, Price price, Quantity storeQuantity, Quantity saleQuantity, String promotionName) {
         this.name = name;
         this.storeQuantity = storeQuantity;
         this.saleQuantity = saleQuantity;
         this.price = price;
         this.promotionName = promotionName;
-        this.isPromotion = isPromotion;
     }
 
     public static Product from(String input) {
         String[] productInfos = input.split(",");
-        if (productInfos.length == 3) {
-            return new Product(productInfos[0], Price.from(productInfos[1]), Quantity.from(productInfos[2]), Quantity.from(0), "", false);
-        }
-        if(productInfos[3] == null) {
-            return new Product(productInfos[0], Price.from(productInfos[1]), Quantity.from(productInfos[2]), Quantity.from(0), productInfos[3], false);
-        }
-        return new Product(productInfos[0], Price.from(productInfos[1]), Quantity.from(productInfos[2]), Quantity.from(0), productInfos[3], true);
+
+        return new Product(productInfos[0], Price.from(productInfos[1]), Quantity.from(productInfos[2]), Quantity.from(0), productInfos[3]);
     }
 
     public void sale(Product product, int saleCount) {
@@ -36,7 +31,6 @@ public class Product {
         this.storeQuantity = Quantity.from(storeQuantity);
         this.saleQuantity = Quantity.from(saleQuantity);
     }
-
 
     public String getName() {
         return name;
@@ -59,7 +53,7 @@ public class Product {
     }
 
     public boolean isPromotion() {
-        return isPromotion;
+        return !promotionName.equals("null");
     }
 
     @Override
@@ -83,7 +77,6 @@ public class Product {
                 ", storeQuantity=" + storeQuantity +
                 ", saleQuantity=" + saleQuantity +
                 ", promotionName='" + promotionName + '\'' +
-                ", isPromotion=" + isPromotion +
                 '}';
     }
 
