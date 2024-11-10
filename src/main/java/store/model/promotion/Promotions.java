@@ -2,7 +2,9 @@ package store.model.promotion;
 
 
 import store.model.product.Product;
+import store.strategy.DateStrategy;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,5 +51,24 @@ public class Promotions {
     public static Map<String, Promotion> getPromotionMap() {
         return promotionMap;
     }
+
+    public boolean isDaysBetween(Product product, DateStrategy dateStrategy) {
+        Promotion promotion = promotionMap.get(product.getPromotionName());
+        LocalDateTime now = dateStrategy.now();
+        LocalDateTime startDate = promotion.getStartDate();
+        LocalDateTime endDate = promotion.getEndDate();
+        return (now.isEqual(startDate) || now.isAfter(startDate)) && (now.isEqual(endDate) || now.isBefore(endDate));
+    }
+
+    public int remainCountAvailableDiscountPromotions(Product product) {
+        Promotion promotion = getEqualsPromotion(product.getPromotionName());
+
+        if(product.getPromotionName().equals("null")) {
+            return 0;
+        }
+
+        return promotion.remainCountAvailableDiscountPromotion(product);
+    }
+
 
 }

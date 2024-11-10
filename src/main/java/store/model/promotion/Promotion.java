@@ -2,13 +2,12 @@ package store.model.promotion;
 
 import store.model.product.Product;
 import store.model.product.Quantity;
-import store.strategy.PromotionStrategy;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Objects;
 
-public class Promotion implements PromotionStrategy {
+public class Promotion {
     private final String name;
     private final Quantity buy;
     private final Quantity get;
@@ -40,20 +39,24 @@ public class Promotion implements PromotionStrategy {
         return LocalDateTime.of(dateTimeArr[0], dateTimeArr[1], dateTimeArr[2],0,0);
     }
 
-    public String getName() {
-        return name;
+
+    public int countNonDiscountPromotion(Product product) {
+
+       return product.getSaleQuantity() % buy.getQuantity() + get.getQuantity();
     }
 
-    @Override
-    public int promotion(String event, int saleQuantity) {
+    public int remainCountAvailableDiscountPromotion(Product product) {
+        if(product.getStoreQuantity() > 0 && remainCheckPromotion(product.getSaleQuantity())) {
+            return get.getQuantity();
+        }
         return 0;
     }
 
-    public int countNonDiscountPromotion(Product product) {
-        System.out.println(product);
-
-        System.out.println(product.getSaleQuantity() % buy.getQuantity() + get.getQuantity());
-       return product.getSaleQuantity() % buy.getQuantity() + get.getQuantity();
+    private boolean remainCheckPromotion(int saleQuantity) {
+        if((saleQuantity % (buy.getQuantity() + get.getQuantity())) == buy.getQuantity()) {
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -79,4 +82,18 @@ public class Promotion implements PromotionStrategy {
                 ", endDate=" + endDate +
                 '}';
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public LocalDateTime getStartDate() {
+        return startDate;
+    }
+
+    public LocalDateTime getEndDate() {
+        return endDate;
+    }
+
+
 }

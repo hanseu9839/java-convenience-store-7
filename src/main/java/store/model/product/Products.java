@@ -1,12 +1,15 @@
 package store.model.product;
 
 import store.model.promotion.Promotions;
+import store.strategy.DateStrategy;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
 public class Products {
+
+    private static final String STORE_QUANTITY_ERROR = "재고 수량을 초과하여 구매할 수 없습니다. 다시 입력해 주세요.";
 
     private final List<Product> products;
     private final Promotions promotions;
@@ -29,8 +32,19 @@ public class Products {
 
     public void sale(int purchaseProductCount) {
         // 7개 - 10개\
+        checkSaleProductCount(purchaseProductCount);
         purchaseProductCount -= salePromotionProduct(purchaseProductCount);
         saleNotPromotionProduct(purchaseProductCount);
+    }
+
+    private void checkSaleProductCount(int purchaseProductCount) {
+        int totalStoreProductQuantity = products.stream()
+                .mapToInt(Product::getStoreQuantity)
+                .sum();
+
+        if(totalStoreProductQuantity == purchaseProductCount) {
+            throw new IllegalArgumentException(STORE_QUANTITY_ERROR);
+        }
     }
 
     private int salePromotionProduct(int purchaseProductCount) {
@@ -86,9 +100,26 @@ public class Products {
         return notDiscountProductCount;
     }
 
-    public boolean isPromotions() {
-        return products.stream()
+    public boolean isPromotions(DateStrategy dateStrategy) {
+        boolean productPromotion = products.stream()
                 .anyMatch(Product::isPromotion);
+
+        if(!productPromotion) {
+            return false;
+        }
+
+        boolean isDaysBetween = products.stream()
+                .anyMatch(product -> promotions.isDaysBetween(product, dateStrategy));
+
+        return productPromotion && isDaysBetween;
+    }
+
+    public int remainCountAvailableDiscountPromotions() {
+        int remainCountAvailableDiscount = 0;
+        for(Product product : products) {
+            remainCountAvailableDiscount += promotions.remainCountAvailableDiscountPromotions(product);
+        }
+        return remainCountAvailableDiscount;
     }
 
     public List<Product> getProducts() {
@@ -115,5 +146,6 @@ public class Products {
                 ", promotions=" + promotions +
                 '}';
     }
+
 
 }

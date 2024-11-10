@@ -53,7 +53,7 @@ public class Product {
     }
 
     public boolean isPromotion() {
-        return !promotionName.equals("null");
+        return !promotionName.equals("null") ;
     }
 
     @Override

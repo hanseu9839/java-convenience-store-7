@@ -1,11 +1,9 @@
 package store.model.store;
 
 import org.junit.jupiter.api.Test;
+import store.strategy.DateStrategyImpl;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -41,7 +39,7 @@ public class StoreTest {
     void 상품_판매_프로모션_여부_테스트() {
         Store store = new Store(new HashMap<>(), new HashSet<>());
         store.stores();
-        assertThat(store.isPromotions(Set.of("콜라", "물"))).isEqualTo(List.of(true, false));
+        assertThat(store.isPromotions(Set.of("콜라", "물"), new DateStrategyImpl())).isEqualTo(Map.of("물", false, "콜라", true));
     }
 
     @Test
@@ -49,8 +47,24 @@ public class StoreTest {
         Store store = new Store(new HashMap<>(), new HashSet<>());
         store.stores();
         Set<String> saleProducts = store.sale("[콜라-12]");
-        assertThat(store.countNonDiscountPromotions(saleProducts)).isEqualTo(3);
+        assertThat(store.countNonDiscountPromotions(saleProducts)).isEqualTo(Map.of("콜라", 3));
     }
 
+    @Test
+    void 프로모션_상품_미_추가_상품_테스트() {
+        Store store = new Store(new HashMap<>(), new HashSet<>());
+        store.stores();
+        Set<String> saleProducts = store.sale("[초코바-1]");
+        assertThat(store.remainCountAvailableDiscountPromotions(saleProducts)).isEqualTo(Map.of("초코바",1));
+    }
+
+
+    @Test
+    void 프로모션_상품_판매_에러_테스트() {
+        Store store = new Store(new HashMap<>(), new HashSet<>());
+        store.stores();
+        assertThatThrownBy(() -> store.sale("초코바"))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
 
 }

@@ -24,7 +24,7 @@ public class ProductTest {
 
     @Test
     void 싱품_재고_저장_테스트() {
-        String input = "물,500원,10개";
+        String input = "물,500원,10개,null";
         Product product = Product.from(input);
         assertThat(product).isEqualTo(new Product("물", Price.from(500), Quantity.from(10), Quantity.from(0), ""));
     }
