@@ -49,11 +49,9 @@ public class Promotion implements PromotionStrategy {
         return 0;
     }
 
-    public int isPromotionButNotDiscountProductCount(Product product) {
+    public int countNonDiscountPromotion(Product product) {
         System.out.println(product);
-        System.out.println(product.getSaleQuantity());
-        System.out.println(buy.getQuantity());
-        System.out.println(get.getQuantity());
+
         System.out.println(product.getSaleQuantity() % buy.getQuantity() + get.getQuantity());
        return product.getSaleQuantity() % buy.getQuantity() + get.getQuantity();
     }

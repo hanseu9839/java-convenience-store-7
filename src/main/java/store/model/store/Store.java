@@ -101,11 +101,11 @@ public class Store {
         }
     }
 
-    public int isPromotionButNotDiscountProductCount(Set<String> productNames) {
+    public int countNonDiscountPromotions(Set<String> productNames) {
         int notDisCountPromotionCounts = 0;
         for(String productName : productNames) {
             Products products = stores.get(productName);
-            notDisCountPromotionCounts += products.isPromotionButNotDiscountProductCount();
+            notDisCountPromotionCounts += products.countNonDiscountPromotions();
         }
 
         return notDisCountPromotionCounts;

@@ -78,10 +78,10 @@ public class Products {
         return 0;
     }
 
-    public int isPromotionButNotDiscountProductCount() {
+    public int countNonDiscountPromotions() {
         int notDiscountProductCount = 0;
         for (Product product : products) {
-            notDiscountProductCount += promotions.isPromotionButNotDiscountProductCount(product);
+            notDiscountProductCount += promotions.countNonDiscountPromotions(product);
         }
         return notDiscountProductCount;
     }

@@ -36,14 +36,14 @@ public class Promotions {
         return readFile(PROMOTION_FILE_PATH);
     }
 
-    public int isPromotionButNotDiscountProductCount(Product product) {
+    public int countNonDiscountPromotions(Product product) {
         Promotion promotion = getEqualsPromotion(product.getPromotionName());
 
         if(product.getPromotionName().equals("null")) {
             return product.getSaleQuantity();
         }
 
-        return promotion.isPromotionButNotDiscountProductCount(product);
+        return promotion.countNonDiscountPromotion(product);
     }
 
     public static Map<String, Promotion> getPromotionMap() {

@@ -49,7 +49,7 @@ public class StoreTest {
         Store store = new Store(new HashMap<>(), new HashSet<>());
         store.stores();
         Set<String> saleProducts = store.sale("[콜라-12]");
-        assertThat(store.isPromotionButNotDiscountProductCount(saleProducts)).isEqualTo(3);
+        assertThat(store.countNonDiscountPromotions(saleProducts)).isEqualTo(3);
     }
 
 
