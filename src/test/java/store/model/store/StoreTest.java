@@ -23,7 +23,7 @@ public class StoreTest {
     void 상품_판매_실패_테스트() {
         Store store = new Store(new HashMap<>(), new HashSet<>());
         store.fileStores();
-        List<Product> sales = Product.createSalesFrom("[과자-3],[오렌지주스-1]", store);
+        List<Product> sales = Product.createSalesFrom("[과자-3],[오렌지주스-1]");
         assertThatThrownBy(() -> store.sale(sales))
                 .isInstanceOf(IllegalArgumentException.class);
 
@@ -40,7 +40,7 @@ public class StoreTest {
     void 프로모션_상품_판매__프로모션이_아닌_개수_여부_테스트() {
         Store store = new Store(new HashMap<>(), new HashSet<>());
         store.fileStores();
-        List<Product> sales = Product.createSalesFrom("[콜라-12]", store);
+        List<Product> sales = Product.createSalesFrom("[콜라-12]");
         Set<SaleProduct> saleProducts = store.sale(sales);
         assertThat(store.countNonDiscountPromotions(saleProducts)).isEqualTo(Map.of("콜라", 3));
     }
@@ -49,7 +49,7 @@ public class StoreTest {
     void 프로모션_상품_미_추가_상품_테스트() {
         Store store = new Store(new HashMap<>(), new HashSet<>());
         store.fileStores();
-        List<Product> sales = Product.createSalesFrom("[초코바-1]", store);
+        List<Product> sales = Product.createSalesFrom("[초코바-1]");
         Set<SaleProduct> saleProducts = store.sale(sales);
         assertThat(store.remainCountAvailableDiscountPromotions(saleProducts)).isEqualTo(Map.of("초코바",1));
     }

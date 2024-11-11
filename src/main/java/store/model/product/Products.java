@@ -11,8 +11,8 @@ public class Products {
 
     private static final String STORE_QUANTITY_ERROR = "재고 수량을 초과하여 구매할 수 없습니다. 다시 입력해 주세요.";
 
-    private final List<Product> products;
-    private final Promotions promotions;
+    private List<Product> products;
+    private Promotions promotions;
 
 
     public Products(List<Product> products, Promotions promotions) {
@@ -57,13 +57,13 @@ public class Products {
 
     private int salePromotionProductCount(Product product, int purchaseProductCount) {
         if (product.getPromotionName() != null && product.getStoreQuantity() > 0 && product.getStoreQuantity() >= purchaseProductCount) {
-            product.sale(product, purchaseProductCount);
+            product.sale(purchaseProductCount);
             return purchaseProductCount;
         }
 
         if (product.getPromotionName() != null && product.getStoreQuantity() > 0) {
             int productSaleCount = product.getStoreQuantity();
-            product.sale(product, productSaleCount);
+            product.sale(productSaleCount);
             return productSaleCount;
         }
 
@@ -81,11 +81,11 @@ public class Products {
 
     private int saleNotPromotionProductCount(Product product, int purchaseProductCount) {
         if (product.getPromotionName() == null && product.getStoreQuantity() > 0 && product.getStoreQuantity() >= purchaseProductCount) {
-            product.sale(product, purchaseProductCount);
+            product.sale(purchaseProductCount);
         }
         if (product.getPromotionName() == null && product.getStoreQuantity() > 0) {
             int productSaleCount = product.getStoreQuantity();
-            product.sale(product, productSaleCount);
+            product.sale(productSaleCount);
             return productSaleCount;
         }
         return 0;
@@ -128,7 +128,7 @@ public class Products {
     }
 
     public List<Product> getProducts() {
-        return Collections.unmodifiableList(products);
+        return products;
     }
 
     public int getSize() {

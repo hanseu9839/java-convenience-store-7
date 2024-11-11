@@ -71,7 +71,6 @@ public class OutputView {
             int promotionQuantity = makePromotionQuantity(products, new DateStrategyImpl());
             promotionOutputView(saleProduct.getName(), promotionQuantity);
         }
-        System.out.println();
         System.out.println(PROMOTION_BOTTOM);
     }
 

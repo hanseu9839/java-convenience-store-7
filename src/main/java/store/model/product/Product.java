@@ -42,7 +42,7 @@ public class Product {
         return new Product(productInfos[0], Price.from(productInfos[1]), Quantity.from(productInfos[2]), Quantity.from(0), productInfos[3]);
     }
 
-    public static List<Product> createSalesFrom(String input, Store store) {
+    public static List<Product> createSalesFrom(String input) {
         input = input.replaceAll(PRODUCTS_REPLACE_DELIMITER, EMPTY_DELIMITER);
         String[] products = input.split(PRODUCTS_SPLIT_DELIMITER);
 
@@ -60,11 +60,9 @@ public class Product {
         return makeProductList;
     }
 
-    public void sale(Product product, int saleCount) {
-        int storeQuantity = product.getStoreQuantity() - saleCount;
-        int saleQuantity = product.getSaleQuantity() + saleCount;
-        this.storeQuantity = Quantity.from(storeQuantity);
-        this.saleQuantity = Quantity.from(saleQuantity);
+    public void sale(int saleCount) {
+        this.storeQuantity.minus(saleCount);
+        this.saleQuantity.plus(saleCount);
     }
 
 
@@ -81,7 +79,7 @@ public class Product {
     }
 
     public int getStoreQuantity() {
-        return storeQuantity.getQuantity();
+        return this.storeQuantity.getQuantity();
     }
 
     public int getSaleQuantity() {

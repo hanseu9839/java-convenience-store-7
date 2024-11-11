@@ -43,6 +43,14 @@ public class Quantity {
         return quantity;
     }
 
+    public void minus(int saleCount) {
+        this.quantity -= saleCount;
+    }
+
+    public void plus(int saleCount) {
+        this.quantity += saleCount;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -66,5 +74,10 @@ public class Quantity {
                 "quantity=" + quantity +
                 '}';
     }
+
+    public void applySale(int quantity) {
+        this.quantity = quantity;
+    }
+
 
 }

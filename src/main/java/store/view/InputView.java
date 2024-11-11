@@ -23,7 +23,7 @@ public class InputView {
     public static Set<SaleProduct> productQuestion(Store store, MemberShip memberShip) {
         System.out.println(PRODUCT_QUESTION);
         String saleProductsStr = Console.readLine();
-        List<Product> saleProducts = Product.createSalesFrom(saleProductsStr, store);
+        List<Product> saleProducts = Product.createSalesFrom(saleProductsStr);
         Set<SaleProduct> sales = store.sale(saleProducts);
         Map<String, Boolean> promotions = store.isPromotions(sales, new DateStrategyImpl());
         boolean isPromotionFlag = isPromotionFlag(sales, promotions);
