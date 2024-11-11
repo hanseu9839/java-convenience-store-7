@@ -1,23 +1,16 @@
 package store.model.product;
 
-import store.model.store.Store;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class Product {
-    private static final String EMPTY_DELIMITER = "";
-    private static final String PRODUCTS_REPLACE_DELIMITER = "\\[|\\]";
-    private static final String PRODUCTS_SPLIT_DELIMITER = ",";
-    private static final String PRODUCT_SPLIT_DELIMITER = "-";
-    private static final String INPUT_ERROR = "잘못된 입력입니다. 다시 입력해 주세요.";
-
     private String name;
     private Price price;
     private Quantity storeQuantity;
     private Quantity saleQuantity;
     private String promotionName;
+    private int currentQuantity;
 
     public Product(String name, Price price, Quantity storeQuantity, Quantity saleQuantity, String promotionName) {
         this.name = name;
@@ -25,6 +18,7 @@ public class Product {
         this.saleQuantity = saleQuantity;
         this.price = price;
         this.promotionName = promotionName;
+
     }
 
     public static Product createInputFrom(String input) {
@@ -40,24 +34,6 @@ public class Product {
         String[] productInfos = input.split(",");
 
         return new Product(productInfos[0], Price.from(productInfos[1]), Quantity.from(productInfos[2]), Quantity.from(0), productInfos[3]);
-    }
-
-    public static List<Product> createSalesFrom(String input) {
-        input = input.replaceAll(PRODUCTS_REPLACE_DELIMITER, EMPTY_DELIMITER);
-        String[] products = input.split(PRODUCTS_SPLIT_DELIMITER);
-
-        List<Product> makeProductList = new ArrayList<>();
-        try {
-            for (String product : products) {
-                String[] productArr = product.split(PRODUCT_SPLIT_DELIMITER);
-                makeProductList.add(new Product(productArr[0], Price.from(0), Quantity.from(Integer.parseInt(productArr[1])), Quantity.from(0), EMPTY_DELIMITER));
-            }
-        } catch (Exception e) {
-            throw new IllegalArgumentException(INPUT_ERROR);
-        }
-
-
-        return makeProductList;
     }
 
     public void sale(int saleCount) {

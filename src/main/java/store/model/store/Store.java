@@ -26,17 +26,6 @@ public class Store {
         this.productNames = productNames;
     }
 
-    public Set<String> inputStores(String[] products) {
-        for (String productStr : products) {
-            Product product = Product.createInputFrom(productStr);
-            Products targetProducts = stores.getOrDefault(product.getName(), new Products(new ArrayList<>(), new Promotions()));
-            targetProducts.add(product);
-            stores.put(product.getName(), targetProducts);
-            productNames.add(product.getName());
-        }
-        return productNames;
-    }
-
     public Set<String> fileStores() {
         List<String> products = pull();
         for (int i = 1; i < products.size(); i++) {
@@ -64,14 +53,13 @@ public class Store {
         return readFile(PRODUCTS_FILE_PATH);
     }
 
-    public Set<SaleProduct> sale(List<Product> saleProducts) {
+    public Set<SaleProduct> sale(List<SaleProduct> saleProducts) {
         Set<SaleProduct> saleProductNames = new LinkedHashSet<>();
 
-        for (Product saleProduct : saleProducts) {
+        for (SaleProduct saleProduct : saleProducts) {
             Products products = isValid(saleProduct.getName());
-            products.sale(saleProduct.getStoreQuantity());
-            SaleProduct saleProductTarget = new SaleProduct(saleProduct.getName(), Price.from(products.getProducts().getFirst().getPrice()), Quantity.from(saleProduct.getStoreQuantity()), products.getProducts().getFirst().getPromotionName());
-            saleProductNames.add(saleProductTarget);
+            products.sale(saleProduct.getQuantity());
+            saleProductNames.add(saleProduct);
         }
 
         return saleProductNames;

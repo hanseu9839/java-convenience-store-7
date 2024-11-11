@@ -9,7 +9,6 @@ public class Application {
 
         StoreGame storeGame = new StoreGame();
         storeGame.play();
-
     }
 }
 

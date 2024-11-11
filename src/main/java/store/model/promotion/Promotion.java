@@ -2,6 +2,7 @@ package store.model.promotion;
 
 import store.model.product.Product;
 import store.model.product.Quantity;
+import store.model.sale.SaleProduct;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -39,7 +40,6 @@ public class Promotion {
         return LocalDateTime.of(dateTimeArr[0], dateTimeArr[1], dateTimeArr[2],0,0);
     }
 
-
     public int countNonDiscountPromotion(Product product) {
         if(product.getSaleQuantity() / (buy.getQuantity() + get.getQuantity()) <= 0) {
             return 0;
@@ -60,6 +60,7 @@ public class Promotion {
         }
         return false;
     }
+
 
     @Override
     public boolean equals(Object o) {
@@ -100,5 +101,7 @@ public class Promotion {
     public int promotionQuantity(int totalCount) {
         return (totalCount / (buy.getQuantity() + get.getQuantity()));
     }
+
+
 
 }

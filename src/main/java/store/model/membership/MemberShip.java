@@ -14,19 +14,11 @@ public class MemberShip {
         this.isMemberShip = isMemberShip;
     }
 
-    public int disCountMemberShip(Map<String, Products> map, Set<SaleProduct> saleProducts) {
-        int priceMoney = 0;
-
-        if(!isMemberShip) {
-            return priceMoney;
+    public int disCountMemberShip(int price) {
+        if(isMemberShip) {
+            return (int) (price * 0.3);
         }
-
-        for(SaleProduct saleProduct : saleProducts) {
-            Products products = map.get(saleProduct.getName());
-            priceMoney += products.getProducts().stream().mapToInt(Product::getPrice).sum();
-        }
-
-        return (int) (priceMoney * 0.3);
+        return 0;
     }
 
     public void isNotMemberShip() {

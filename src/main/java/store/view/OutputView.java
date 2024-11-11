@@ -3,12 +3,16 @@ package store.view;
 import store.model.membership.MemberShip;
 import store.model.product.Product;
 import store.model.product.Products;
+import store.model.promotion.Promotion;
+import store.model.promotion.Promotions;
 import store.model.sale.SaleProduct;
 import store.model.store.Store;
 import store.strategy.DateStrategy;
 import store.strategy.DateStrategyImpl;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -88,24 +92,26 @@ public class OutputView {
     private static void calculateReceiptResultView(Set<SaleProduct> saleProducts, Map<String, Products> products, MemberShip memberShip) {
         int totalPrice = 0;
         int totalQuantity = 0;
-        int promotionDiscountPrice = 0;
+        int notPromotionPrice = 0;
+        List<Integer> promotionDisCountPrice = new ArrayList<>();
         for (SaleProduct saleProduct : saleProducts) {
-            int saleQuantity = products.get(saleProduct.getName()).getProducts()
-                    .stream()
-                    .mapToInt(Product::getSaleQuantity)
-                    .sum();
-            int price = products.get(saleProduct.getName()).getProducts().get(0).getPrice();
-            totalPrice += (price * saleQuantity);
-            totalQuantity += saleQuantity;
+           totalQuantity += saleProduct.getQuantity();
+           totalPrice += saleProduct.getPrice() * saleProduct.getQuantity();
+           int promotionCount = products.get(saleProduct.getName()).promotionCount(new DateStrategyImpl());
+           promotionDisCountPrice.add(promotionCount*saleProduct.getPrice());
 
-            promotionDiscountPrice += makePromotionQuantity(products.get(saleProduct.getName()), new DateStrategyImpl()) * price;
+           if(promotionCount==0) {
+               notPromotionPrice += saleProduct.getPrice() * saleProduct.getQuantity();
+           }
+
         }
 
         DecimalFormat format = new DecimalFormat("#,###원");
         System.out.printf("%-10s %6d %10s\n", "총구매액", totalQuantity, format.format(totalPrice));
-        System.out.printf("%-10s %13s\n", "행사할인", format.format(promotionDiscountPrice * -1));
-        totalPrice -= promotionDiscountPrice;
-        int memberShipDisCount = memberShip.disCountMemberShip(products, saleProducts);
+        int totalPromotionDisCountPrice = promotionDisCountPrice.stream().mapToInt(Integer::intValue).sum();
+        System.out.printf("%-10s %13s\n", "행사할인", format.format(totalPromotionDisCountPrice * -1));
+        totalPrice -= totalPromotionDisCountPrice;
+        int memberShipDisCount = memberShip.disCountMemberShip(notPromotionPrice);
         System.out.printf("%-10s %17s\n", "멤버십할인", format.format(memberShipDisCount));
         totalPrice -= memberShipDisCount;
         System.out.printf("%-10s %16s\n", "내실돈", format.format(totalPrice));
@@ -117,11 +123,6 @@ public class OutputView {
             int totalPrice = saleProduct.getQuantity() * saleProduct.getPrice();
             System.out.printf("%-10s %6d %10d\n", saleProduct.getName(), totalQuantity, totalPrice);
         }
-    }
-
-
-    private static int makeTotalPrice(Products products) {
-        return products.getProducts().get(0).getPrice();
     }
 
 }

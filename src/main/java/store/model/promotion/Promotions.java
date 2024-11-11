@@ -74,6 +74,10 @@ public class Promotions {
         return promotion.remainCountAvailableDiscountPromotion(product);
     }
 
+    public static Promotion getPromotion(String promotionName) {
+        return promotionMap.get(promotionName);
+    }
+
 
     public int promotionCount(List<Product> products) {
         int totalCount = 0;
@@ -88,4 +92,5 @@ public class Promotions {
         }
         return totalPromotionQuantity;
     }
+
 }

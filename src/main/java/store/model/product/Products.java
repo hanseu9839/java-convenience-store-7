@@ -3,7 +3,6 @@ package store.model.product;
 import store.model.promotion.Promotions;
 import store.strategy.DateStrategy;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -133,6 +132,10 @@ public class Products {
 
     public int getSize() {
         return products.size();
+    }
+
+    public Product findProduct(String productName) {
+        return products.stream().filter(product -> product.getName().equals(productName)).findFirst().get();
     }
 
     @Override

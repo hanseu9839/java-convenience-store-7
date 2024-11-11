@@ -2,7 +2,6 @@ package store.view;
 
 import camp.nextstep.edu.missionutils.Console;
 import store.model.membership.MemberShip;
-import store.model.product.Product;
 import store.model.sale.SaleProduct;
 import store.model.store.Store;
 import store.strategy.DateStrategyImpl;
@@ -23,16 +22,15 @@ public class InputView {
     public static Set<SaleProduct> productQuestion(Store store, MemberShip memberShip) {
         System.out.println(PRODUCT_QUESTION);
         String saleProductsStr = Console.readLine();
-        List<Product> saleProducts = Product.createSalesFrom(saleProductsStr);
+
+        List<SaleProduct> saleProducts = SaleProduct.createSalesFrom(saleProductsStr, store);
         Set<SaleProduct> sales = store.sale(saleProducts);
         Map<String, Boolean> promotions = store.isPromotions(sales, new DateStrategyImpl());
-        boolean isPromotionFlag = isPromotionFlag(sales, promotions);
 
-        if (isPromotionFlag) {
-            Map<String, Integer> countNonDiscountPromotionsMap = store.countNonDiscountPromotions(sales);
-            boolean flag = countNonDiscountPromotionsMap(sales, countNonDiscountPromotionsMap);
-
-            if(!flag) {
+        for (SaleProduct saleProduct : saleProducts) {
+            if (promotions.get(saleProduct.getName())) {
+                Map<String, Integer> countNonDiscountPromotionsMap = store.countNonDiscountPromotions(sales);
+                countNonDiscountPromotionsMap(sales, countNonDiscountPromotionsMap);
                 Map<String, Integer> remainCountAvailableMap = store.remainCountAvailableDiscountPromotions(sales);
                 remainCountAvailable(store, sales, remainCountAvailableMap);
             }
@@ -40,7 +38,7 @@ public class InputView {
 
         System.out.println(MEMBERSHIP_QUESTION);
         String isMemberShip = Console.readLine();
-        if(isMemberShip.equals("Y")) {
+        if (isMemberShip.equals("Y")) {
             memberShip.isNotMemberShip();
         }
 
@@ -56,9 +54,9 @@ public class InputView {
     private static void remainCountAvailableQuestion(Store store, Map<String, Integer> remainCountAvailableMap, String sale) {
         int remainCountAvailableCount = remainCountAvailableMap.get(sale);
         if (remainCountAvailableCount > 0) {
-            System.out.println(sale +"은(는) " + remainCountAvailableCount + "개를 무료로 더 받을 수 있습니다. 추가하시겠습니까?(Y/N)");
+            System.out.println(sale + "은(는) " + remainCountAvailableCount + "개를 무료로 더 받을 수 있습니다. 추가하시겠습니까?(Y/N)");
             String remainPromotion = Console.readLine();
-            if(remainPromotion.equals("Y")) {
+            if (remainPromotion.equals("Y")) {
                 store.promotionSale(sale);
             }
         }
