@@ -15,10 +15,6 @@ public class InputView {
     private static final String PRODUCT_QUESTION = "구매하실 상품명과 수량을 입력해주세요. (예: [사이다-2],[감자칩-1])";
     private static final String MEMBERSHIP_QUESTION = "멤버십 할인을 받으시겠습니까? (Y/N)";
 
-    public static String[] productInput() {
-        return Console.readLine().split(" ");
-    }
-
     public static Set<SaleProduct> productQuestion(Store store, MemberShip memberShip) {
         System.out.println(PRODUCT_QUESTION);
         String saleProductsStr = Console.readLine();
@@ -29,10 +25,14 @@ public class InputView {
 
         for (SaleProduct saleProduct : saleProducts) {
             if (promotions.get(saleProduct.getName())) {
-                Map<String, Integer> countNonDiscountPromotionsMap = store.countNonDiscountPromotions(sales);
-                countNonDiscountPromotionsMap(sales, countNonDiscountPromotionsMap);
-                Map<String, Integer> remainCountAvailableMap = store.remainCountAvailableDiscountPromotions(sales);
-                remainCountAvailable(store, sales, remainCountAvailableMap);
+                Map<String, Integer> countNonDiscountPromotionsMap = store.countNonDiscountPromotions(saleProduct);
+
+                if(nonDiscountProMotionsQuestion(saleProduct.getName(), countNonDiscountPromotionsMap.get(saleProduct.getName()))) {
+                    continue;
+                }
+
+                Map<String, Integer> remainCountAvailableMap = store.remainCountAvailableDiscountPromotions(saleProduct);
+                remainCountAvailable(store, saleProduct, remainCountAvailableMap);
             }
         }
 
@@ -45,10 +45,8 @@ public class InputView {
         return sales;
     }
 
-    private static void remainCountAvailable(Store store, Set<SaleProduct> saleProducts, Map<String, Integer> remainCountAvailableMap) {
-        for (SaleProduct saleProduct : saleProducts) {
-            remainCountAvailableQuestion(store, remainCountAvailableMap, saleProduct.getName());
-        }
+    private static void remainCountAvailable(Store store, SaleProduct saleProduct, Map<String, Integer> remainCountAvailableMap) {
+        remainCountAvailableQuestion(store, remainCountAvailableMap, saleProduct.getName());
     }
 
     private static void remainCountAvailableQuestion(Store store, Map<String, Integer> remainCountAvailableMap, String sale) {
@@ -62,17 +60,6 @@ public class InputView {
         }
     }
 
-    private static boolean countNonDiscountPromotionsMap(Set<SaleProduct> saleProducts, Map<String, Integer> countNonDiscountPromotionsMap) {
-        AtomicBoolean flag = new AtomicBoolean(false);
-
-        saleProducts.forEach(sale -> {
-            int nonDiscountPromotionsCount = countNonDiscountPromotionsMap.get(sale.getName());
-            flag.set(nonDiscountProMotionsQuestion(sale.getName(), nonDiscountPromotionsCount));
-        });
-
-        return flag.get();
-    }
-
     private static boolean nonDiscountProMotionsQuestion(String sale, int nonDiscountPromotionsCount) {
         if (nonDiscountPromotionsCount > 0) {
             System.out.println("현재 " + sale + " " + nonDiscountPromotionsCount + "개는 프로모션 할인이 적용되지 않습니다. 그래도 구매하시겠습니까? (Y/N)");
@@ -80,15 +67,6 @@ public class InputView {
             return nonPromotion.equals("Y");
         }
 
-        return false;
-    }
-
-    private static boolean isPromotionFlag(Set<SaleProduct> saleProducts, Map<String, Boolean> promotions) {
-        for (SaleProduct saleProduct : saleProducts) {
-            if (promotions.get(saleProduct.getName())) {
-                return true;
-            }
-        }
         return false;
     }
 

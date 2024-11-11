@@ -1,10 +1,7 @@
 package store.view;
 
 import store.model.membership.MemberShip;
-import store.model.product.Product;
 import store.model.product.Products;
-import store.model.promotion.Promotion;
-import store.model.promotion.Promotions;
 import store.model.sale.SaleProduct;
 import store.model.store.Store;
 import store.strategy.DateStrategy;
@@ -103,7 +100,6 @@ public class OutputView {
            if(promotionCount==0) {
                notPromotionPrice += saleProduct.getPrice() * saleProduct.getQuantity();
            }
-
         }
 
         DecimalFormat format = new DecimalFormat("#,###원");

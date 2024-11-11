@@ -1,7 +1,6 @@
 package store.model.store;
 
 import org.junit.jupiter.api.Test;
-import store.model.product.Product;
 import store.model.sale.SaleProduct;
 import store.strategy.DateStrategyImpl;
 
@@ -42,7 +41,10 @@ public class StoreTest {
         store.fileStores();
         List<SaleProduct> sales = SaleProduct.createSalesFrom("[콜라-12]", store);
         Set<SaleProduct> saleProducts = store.sale(sales);
-        assertThat(store.countNonDiscountPromotions(saleProducts)).isEqualTo(Map.of("콜라", 3));
+        for(SaleProduct saleProduct : saleProducts) {
+            assertThat(store.countNonDiscountPromotions(saleProduct)).isEqualTo(Map.of("콜라", 3));
+
+        }
     }
 
     @Test
@@ -50,8 +52,11 @@ public class StoreTest {
         Store store = new Store(new HashMap<>(), new HashSet<>());
         store.fileStores();
         List<SaleProduct> sales = SaleProduct.createSalesFrom("[초코바-1]", store);
-        Set<SaleProduct> saleProducts = store.sale(sales);
-        assertThat(store.remainCountAvailableDiscountPromotions(saleProducts)).isEqualTo(Map.of("초코바", 1));
+        Set<SaleProduct> sale = store.sale(sales);
+        for(SaleProduct saleProduct : sale) {
+            assertThat(store.remainCountAvailableDiscountPromotions(saleProduct)).isEqualTo(Map.of("초코바", 1));
+        }
+
     }
 
 }

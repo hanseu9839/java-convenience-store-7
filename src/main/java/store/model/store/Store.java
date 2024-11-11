@@ -99,22 +99,21 @@ public class Store {
         }
     }
 
-    public Map<String, Integer> countNonDiscountPromotions(Set<SaleProduct> saleProducts) {
+    public Map<String, Integer> countNonDiscountPromotions(SaleProduct saleProduct) {
         Map<String, Integer> nonDisCountPromotionsMap = new HashMap<>();
-        for (SaleProduct saleProduct : saleProducts) {
-            Products products = stores.get(saleProduct.getName());
-            nonDisCountPromotionsMap.put(saleProduct.getName(), products.countNonDiscountPromotions());
-        }
+
+        Products products = stores.get(saleProduct.getName());
+        nonDisCountPromotionsMap.put(saleProduct.getName(), products.countNonDiscountPromotions());
 
         return nonDisCountPromotionsMap;
     }
 
-    public Map<String, Integer> remainCountAvailableDiscountPromotions(Set<SaleProduct> saleProducts) {
+    public Map<String, Integer> remainCountAvailableDiscountPromotions(SaleProduct saleProduct) {
         Map<String, Integer> remainCountAvailableMap = new HashMap<>();
-        for (SaleProduct saleProduct : saleProducts) {
-            Products products = stores.get(saleProduct.getName());
-            remainCountAvailableMap.put(saleProduct.getName(), products.remainCountAvailableDiscountPromotions());
-        }
+
+        Products products = stores.get(saleProduct.getName());
+        remainCountAvailableMap.put(saleProduct.getName(), products.remainCountAvailableDiscountPromotions());
+
 
         return remainCountAvailableMap;
     }
