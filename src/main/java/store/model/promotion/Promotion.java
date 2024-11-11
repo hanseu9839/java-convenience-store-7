@@ -41,8 +41,10 @@ public class Promotion {
 
 
     public int countNonDiscountPromotion(Product product) {
-
-       return product.getSaleQuantity() % buy.getQuantity() + get.getQuantity();
+        if(product.getSaleQuantity() / (buy.getQuantity() + get.getQuantity()) <= 0) {
+            return 0;
+        }
+       return product.getSaleQuantity() % (buy.getQuantity() + get.getQuantity());
     }
 
     public int remainCountAvailableDiscountPromotion(Product product) {
@@ -95,5 +97,8 @@ public class Promotion {
         return endDate;
     }
 
+    public int promotionQuantity(int totalCount) {
+        return (totalCount / (buy.getQuantity() + get.getQuantity()));
+    }
 
 }

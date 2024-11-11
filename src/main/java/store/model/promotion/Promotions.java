@@ -28,7 +28,7 @@ public class Promotions {
     }
 
     public static void savePromotion(List<String> promotions) {
-        for(int i=1; i< promotions.size(); i++) {
+        for (int i = 1; i < promotions.size(); i++) {
             Promotion targetPromotion = Promotion.from(promotions.get(i));
             promotionMap.put(targetPromotion.getName(), targetPromotion);
         }
@@ -41,7 +41,7 @@ public class Promotions {
     public int countNonDiscountPromotions(Product product) {
         Promotion promotion = getEqualsPromotion(product.getPromotionName());
 
-        if(product.getPromotionName().equals("null")) {
+        if (product.getPromotionName().equals("null")) {
             return product.getSaleQuantity();
         }
 
@@ -54,6 +54,10 @@ public class Promotions {
 
     public boolean isDaysBetween(Product product, DateStrategy dateStrategy) {
         Promotion promotion = promotionMap.get(product.getPromotionName());
+        if(promotion==null) {
+            return false;
+        }
+
         LocalDateTime now = dateStrategy.now();
         LocalDateTime startDate = promotion.getStartDate();
         LocalDateTime endDate = promotion.getEndDate();
@@ -63,7 +67,7 @@ public class Promotions {
     public int remainCountAvailableDiscountPromotions(Product product) {
         Promotion promotion = getEqualsPromotion(product.getPromotionName());
 
-        if(product.getPromotionName().equals("null")) {
+        if (product.getPromotionName().equals("null")) {
             return 0;
         }
 
@@ -71,4 +75,16 @@ public class Promotions {
     }
 
 
+    public int promotionCount(List<Product> products) {
+        int totalCount = 0;
+        Promotion promotion = null;
+        for (Product product : products) {
+            totalCount += product.getSaleQuantity();
+            promotion = promotionMap.get(product.getName());
+        }
+        if(promotion==null) {
+            return 0;
+        }
+        return promotion.promotionQuantity(totalCount);
+    }
 }

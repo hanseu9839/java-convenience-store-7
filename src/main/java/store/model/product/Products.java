@@ -20,7 +20,6 @@ public class Products {
         this.promotions = promotions;
     }
 
-
     public void add(Product product) {
         products.add(product);
     }
@@ -42,7 +41,7 @@ public class Products {
                 .mapToInt(Product::getStoreQuantity)
                 .sum();
 
-        if(totalStoreProductQuantity == purchaseProductCount) {
+        if (totalStoreProductQuantity < purchaseProductCount) {
             throw new IllegalArgumentException(STORE_QUANTITY_ERROR);
         }
     }
@@ -104,26 +103,35 @@ public class Products {
         boolean productPromotion = products.stream()
                 .anyMatch(Product::isPromotion);
 
-        if(!productPromotion) {
+        if (!productPromotion) {
             return false;
         }
 
-        boolean isDaysBetween = products.stream()
+        return products.stream()
                 .anyMatch(product -> promotions.isDaysBetween(product, dateStrategy));
-
-        return productPromotion && isDaysBetween;
     }
 
     public int remainCountAvailableDiscountPromotions() {
         int remainCountAvailableDiscount = 0;
-        for(Product product : products) {
+        for (Product product : products) {
             remainCountAvailableDiscount += promotions.remainCountAvailableDiscountPromotions(product);
         }
         return remainCountAvailableDiscount;
     }
 
+    public int promotionCount(DateStrategy dateStrategy) {
+        if(!isPromotions(dateStrategy)) {
+            return 0;
+        }
+       return promotions.promotionCount(products);
+    }
+
     public List<Product> getProducts() {
         return Collections.unmodifiableList(products);
+    }
+
+    public int getSize() {
+        return products.size();
     }
 
     @Override
