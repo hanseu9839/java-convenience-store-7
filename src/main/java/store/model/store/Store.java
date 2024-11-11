@@ -55,7 +55,6 @@ public class Store {
             if (promotions && targetProduct.getSize() < 2) {
                 targetProduct.add(new Product(product.getName(), Price.from(product.getPrice()), Quantity.from(0), Quantity.from(0), "null"));
             }
-
         }
 
         return productNames;
@@ -71,8 +70,7 @@ public class Store {
         for (Product saleProduct : saleProducts) {
             Products products = isValid(saleProduct.getName());
             products.sale(saleProduct.getStoreQuantity());
-            SaleProduct saleProductTarget = new SaleProduct(saleProduct.getName(), Price.from(products.getProducts().getFirst().getPrice()), Quantity.from(saleProduct.getSaleQuantity()), products.getProducts().getFirst().getPromotionName());
-            System.out.println(saleProductTarget);
+            SaleProduct saleProductTarget = new SaleProduct(saleProduct.getName(), Price.from(products.getProducts().getFirst().getPrice()), Quantity.from(saleProduct.getStoreQuantity()), products.getProducts().getFirst().getPromotionName());
             saleProductNames.add(saleProductTarget);
         }
 
