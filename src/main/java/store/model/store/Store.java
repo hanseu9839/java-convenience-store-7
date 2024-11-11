@@ -71,7 +71,8 @@ public class Store {
         for (Product saleProduct : saleProducts) {
             Products products = isValid(saleProduct.getName());
             products.sale(saleProduct.getStoreQuantity());
-            SaleProduct saleProductTarget = new SaleProduct(saleProduct.getName(), Price.from(products.getProducts().get(0).getPrice()), Quantity.from(saleProduct.getSaleQuantity()), products.getProducts().get(0).getPromotionName());
+            SaleProduct saleProductTarget = new SaleProduct(saleProduct.getName(), Price.from(products.getProducts().getFirst().getPrice()), Quantity.from(saleProduct.getSaleQuantity()), products.getProducts().getFirst().getPromotionName());
+            System.out.println(saleProductTarget);
             saleProductNames.add(saleProductTarget);
         }
 

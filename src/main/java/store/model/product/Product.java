@@ -1,5 +1,7 @@
 package store.model.product;
 
+import store.model.store.Store;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -31,7 +33,6 @@ public class Product {
         if(productInfos.length==4) {
             return new Product(productInfos[0], Price.from(productInfos[1]), Quantity.from(productInfos[2]), Quantity.from(productInfos[3]), "null");
         }
-
         return new Product(productInfos[0], Price.from(productInfos[1]), Quantity.from(productInfos[2]), Quantity.from(productInfos[3]), productInfos[4]);
     }
 
@@ -41,7 +42,7 @@ public class Product {
         return new Product(productInfos[0], Price.from(productInfos[1]), Quantity.from(productInfos[2]), Quantity.from(0), productInfos[3]);
     }
 
-    public static List<Product> createSalesFrom(String input) {
+    public static List<Product> createSalesFrom(String input, Store store) {
         input = input.replaceAll(PRODUCTS_REPLACE_DELIMITER, EMPTY_DELIMITER);
         String[] products = input.split(PRODUCTS_SPLIT_DELIMITER);
 
