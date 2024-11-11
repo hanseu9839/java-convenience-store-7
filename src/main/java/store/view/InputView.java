@@ -40,7 +40,6 @@ public class InputView {
         System.out.println(MEMBERSHIP_QUESTION);
         String isMemberShip = Console.readLine();
         if(isMemberShip.equals("Y")) {
-            System.out.println("memberShip");
             memberShip.isNotMemberShip();
         }
 

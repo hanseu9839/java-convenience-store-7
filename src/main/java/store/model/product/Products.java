@@ -121,7 +121,6 @@ public class Products {
 
     public int promotionCount(DateStrategy dateStrategy) {
         if(!isPromotions(dateStrategy)) {
-            System.out.println(isPromotions(dateStrategy));
             return 0;
         }
 
