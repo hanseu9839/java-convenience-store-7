@@ -29,15 +29,18 @@ public class InputView {
 
         if (isPromotionFlag) {
             Map<String, Integer> countNonDiscountPromotionsMap = store.countNonDiscountPromotions(sales);
-            countNonDiscountPromotionsMap(sales, countNonDiscountPromotionsMap);
+            boolean flag = countNonDiscountPromotionsMap(sales, countNonDiscountPromotionsMap);
 
-            Map<String, Integer> remainCountAvailableMap = store.remainCountAvailableDiscountPromotions(sales);
-            remainCountAvailable(store, sales, remainCountAvailableMap);
+            if(!flag) {
+                Map<String, Integer> remainCountAvailableMap = store.remainCountAvailableDiscountPromotions(sales);
+                remainCountAvailable(store, sales, remainCountAvailableMap);
+            }
         }
 
         System.out.println(MEMBERSHIP_QUESTION);
         String isMemberShip = Console.readLine();
         if(isMemberShip.equals("Y")) {
+            System.out.println("memberShip");
             memberShip.isNotMemberShip();
         }
 

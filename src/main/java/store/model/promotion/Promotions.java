@@ -77,14 +77,15 @@ public class Promotions {
 
     public int promotionCount(List<Product> products) {
         int totalCount = 0;
+        int totalPromotionQuantity = 0;
         Promotion promotion = null;
         for (Product product : products) {
             totalCount += product.getSaleQuantity();
-            promotion = promotionMap.get(product.getName());
+            promotion = promotionMap.get(product.getPromotionName());
+            if(promotion!= null) {
+                totalPromotionQuantity += promotion.promotionQuantity(totalCount);
+            }
         }
-        if(promotion==null) {
-            return 0;
-        }
-        return promotion.promotionQuantity(totalCount);
+        return totalPromotionQuantity;
     }
 }

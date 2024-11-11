@@ -1,10 +1,8 @@
 package store.view;
 
 import store.model.membership.MemberShip;
-import store.model.product.Price;
 import store.model.product.Product;
 import store.model.product.Products;
-import store.model.product.Quantity;
 import store.model.store.Store;
 import store.strategy.DateStrategy;
 import store.strategy.DateStrategyImpl;
@@ -104,6 +102,7 @@ public class OutputView {
 
             promotionDiscountPrice +=  makePromotionQuantity(products.get(productName), new DateStrategyImpl()) * price;
         }
+
         DecimalFormat format = new DecimalFormat("#,###원");
         System.out.printf("%-10s %6d %10s\n", "총구매액", totalQuantity, format.format(totalPrice));
         System.out.printf("%-10s %13s\n", "행사할인", format.format(promotionDiscountPrice*-1));
