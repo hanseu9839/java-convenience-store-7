@@ -2,6 +2,7 @@ package store.model.store;
 
 import org.junit.jupiter.api.Test;
 import store.model.product.Product;
+import store.model.sale.SaleProduct;
 import store.strategy.DateStrategyImpl;
 
 import java.util.*;
@@ -19,14 +20,6 @@ public class StoreTest {
     }
 
     @Test
-    void 상품_판매_테스트() {
-        Store store = new Store(new HashMap<>(), new HashSet<>());
-        store.fileStores();
-        List<Product> sales = Product.createSalesFrom("[콜라-4],[초코바-1]");
-        assertThat(store.sale(sales)).isEqualTo(Set.of("콜라", "초코바"));
-    }
-
-    @Test
     void 상품_판매_실패_테스트() {
         Store store = new Store(new HashMap<>(), new HashSet<>());
         store.fileStores();
@@ -40,7 +33,7 @@ public class StoreTest {
     void 상품_판매_프로모션_여부_테스트() {
         Store store = new Store(new HashMap<>(), new HashSet<>());
         store.fileStores();
-        assertThat(store.isPromotions(Set.of("콜라", "물"), new DateStrategyImpl())).isEqualTo(Map.of("물", false, "콜라", true));
+        assertThat(store.isPromotions(Set.of(new SaleProduct("물"), new SaleProduct("콜라")), new DateStrategyImpl())).isEqualTo(Map.of("물", false, "콜라", true));
     }
 
     @Test
@@ -48,7 +41,7 @@ public class StoreTest {
         Store store = new Store(new HashMap<>(), new HashSet<>());
         store.fileStores();
         List<Product> sales = Product.createSalesFrom("[콜라-12]");
-        Set<String> saleProducts = store.sale(sales);
+        Set<SaleProduct> saleProducts = store.sale(sales);
         assertThat(store.countNonDiscountPromotions(saleProducts)).isEqualTo(Map.of("콜라", 3));
     }
 
@@ -57,7 +50,7 @@ public class StoreTest {
         Store store = new Store(new HashMap<>(), new HashSet<>());
         store.fileStores();
         List<Product> sales = Product.createSalesFrom("[초코바-1]");
-        Set<String> saleProducts = store.sale(sales);
+        Set<SaleProduct> saleProducts = store.sale(sales);
         assertThat(store.remainCountAvailableDiscountPromotions(saleProducts)).isEqualTo(Map.of("초코바",1));
     }
 

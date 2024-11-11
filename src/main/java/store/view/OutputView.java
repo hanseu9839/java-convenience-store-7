@@ -3,6 +3,7 @@ package store.view;
 import store.model.membership.MemberShip;
 import store.model.product.Product;
 import store.model.product.Products;
+import store.model.sale.SaleProduct;
 import store.model.store.Store;
 import store.strategy.DateStrategy;
 import store.strategy.DateStrategyImpl;
@@ -54,23 +55,21 @@ public class OutputView {
         return name;
     }
 
-    public static void receiptResultView(Set<String> productNames, Store store, MemberShip memberShip) {
-        Map<String, Products> stores = store.getStores();
-
+    public static void receiptResultView(Set<SaleProduct> saleProducts, Map<String, Products> stores ,MemberShip memberShip) {
         System.out.println(HEADER_STORE);
         System.out.printf("%-10s %6s %10s\n", "상품명", "수량", "금액");
-        totalSaleQuantityReceiptResultView(productNames, stores);
-        promotionOutputView(productNames, stores);
-        calculateReceiptResultView(productNames, stores, memberShip);
+        totalSaleQuantityReceiptResultView(saleProducts);
+        promotionOutputView(saleProducts, stores);
+        calculateReceiptResultView(saleProducts, stores, memberShip);
     }
 
-    private static void promotionOutputView(Set<String> productNames, Map<String, Products> stores) {
+    private static void promotionOutputView(Set<SaleProduct> saleProducts, Map<String, Products> stores) {
         System.out.println(PROMOTION_HEADER);
 
-        for (String productName : productNames) {
-            Products products = stores.get(productName);
+        for (SaleProduct saleProduct : saleProducts) {
+            Products products = stores.get(saleProduct.getName());
             int promotionQuantity = makePromotionQuantity(products, new DateStrategyImpl());
-            promotionOutputView(productName, promotionQuantity);
+            promotionOutputView(saleProduct.getName(), promotionQuantity);
         }
         System.out.println();
         System.out.println(PROMOTION_BOTTOM);
@@ -87,46 +86,40 @@ public class OutputView {
 
     }
 
-    private static void calculateReceiptResultView(Set<String> productNames, Map<String, Products> products, MemberShip memberShip) {
+    private static void calculateReceiptResultView(Set<SaleProduct> saleProducts, Map<String, Products> products, MemberShip memberShip) {
         int totalPrice = 0;
         int totalQuantity = 0;
         int promotionDiscountPrice = 0;
-        for(String productName : productNames) {
-            int saleQuantity = products.get(productName).getProducts()
+        for (SaleProduct saleProduct : saleProducts) {
+            int saleQuantity = products.get(saleProduct.getName()).getProducts()
                     .stream()
                     .mapToInt(Product::getSaleQuantity)
                     .sum();
-            int price = products.get(productName).getProducts().get(0).getPrice();
+            int price = products.get(saleProduct.getName()).getProducts().get(0).getPrice();
             totalPrice += (price * saleQuantity);
             totalQuantity += saleQuantity;
 
-            promotionDiscountPrice +=  makePromotionQuantity(products.get(productName), new DateStrategyImpl()) * price;
+            promotionDiscountPrice += makePromotionQuantity(products.get(saleProduct.getName()), new DateStrategyImpl()) * price;
         }
 
         DecimalFormat format = new DecimalFormat("#,###원");
         System.out.printf("%-10s %6d %10s\n", "총구매액", totalQuantity, format.format(totalPrice));
-        System.out.printf("%-10s %13s\n", "행사할인", format.format(promotionDiscountPrice*-1));
-        totalPrice-=promotionDiscountPrice;
-        int memberShipDisCount = memberShip.disCountMemberShip(products, productNames);
+        System.out.printf("%-10s %13s\n", "행사할인", format.format(promotionDiscountPrice * -1));
+        totalPrice -= promotionDiscountPrice;
+        int memberShipDisCount = memberShip.disCountMemberShip(products, saleProducts);
         System.out.printf("%-10s %17s\n", "멤버십할인", format.format(memberShipDisCount));
-        totalPrice-=memberShipDisCount;
+        totalPrice -= memberShipDisCount;
         System.out.printf("%-10s %16s\n", "내실돈", format.format(totalPrice));
     }
 
-    private static void totalSaleQuantityReceiptResultView(Set<String> productNames, Map<String, Products> stores) {
-        for (String productName : productNames) {
-            Products products = stores.get(productName);
-            int totalQuantity = makeTotalQuantity(products);
-            int totalPrice = makeTotalPrice(products);
-            System.out.printf("%-10s %6d %10d\n", productName, totalQuantity, totalPrice);
+    private static void totalSaleQuantityReceiptResultView(Set<SaleProduct> saleProducts) {
+        for(SaleProduct saleProduct : saleProducts) {
+            int totalQuantity = saleProduct.getQuantity();
+            int totalPrice = saleProduct.getQuantity() * saleProduct.getPrice();
+            System.out.printf("%-10s %6d %10d\n", saleProduct.getName(), totalQuantity, totalPrice);
         }
     }
 
-    private static int makeTotalQuantity(Products products) {
-        return products.getProducts().stream()
-                .mapToInt(Product::getSaleQuantity)
-                .sum();
-    }
 
     private static int makeTotalPrice(Products products) {
         return products.getProducts().get(0).getPrice();

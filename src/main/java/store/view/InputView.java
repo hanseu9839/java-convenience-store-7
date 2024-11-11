@@ -3,6 +3,7 @@ package store.view;
 import camp.nextstep.edu.missionutils.Console;
 import store.model.membership.MemberShip;
 import store.model.product.Product;
+import store.model.sale.SaleProduct;
 import store.model.store.Store;
 import store.strategy.DateStrategyImpl;
 
@@ -19,11 +20,11 @@ public class InputView {
         return Console.readLine().split(" ");
     }
 
-    public static Set<String> productQuestion(Store store, MemberShip memberShip) {
+    public static Set<SaleProduct> productQuestion(Store store, MemberShip memberShip) {
         System.out.println(PRODUCT_QUESTION);
         String saleProductsStr = Console.readLine();
         List<Product> saleProducts = Product.createSalesFrom(saleProductsStr);
-        Set<String> sales = store.sale(saleProducts);
+        Set<SaleProduct> sales = store.sale(saleProducts);
         Map<String, Boolean> promotions = store.isPromotions(sales, new DateStrategyImpl());
         boolean isPromotionFlag = isPromotionFlag(sales, promotions);
 
@@ -46,9 +47,9 @@ public class InputView {
         return sales;
     }
 
-    private static void remainCountAvailable(Store store, Set<String> sales, Map<String, Integer> remainCountAvailableMap) {
-        for (String sale : sales) {
-            remainCountAvailableQuestion(store, remainCountAvailableMap, sale);
+    private static void remainCountAvailable(Store store, Set<SaleProduct> saleProducts, Map<String, Integer> remainCountAvailableMap) {
+        for (SaleProduct saleProduct : saleProducts) {
+            remainCountAvailableQuestion(store, remainCountAvailableMap, saleProduct.getName());
         }
     }
 
@@ -63,12 +64,12 @@ public class InputView {
         }
     }
 
-    private static boolean countNonDiscountPromotionsMap(Set<String> sales, Map<String, Integer> countNonDiscountPromotionsMap) {
+    private static boolean countNonDiscountPromotionsMap(Set<SaleProduct> saleProducts, Map<String, Integer> countNonDiscountPromotionsMap) {
         AtomicBoolean flag = new AtomicBoolean(false);
 
-        sales.forEach(sale -> {
-            int nonDiscountPromotionsCount = countNonDiscountPromotionsMap.get(sale);
-            flag.set(nonDiscountProMotionsQuestion(sale, nonDiscountPromotionsCount));
+        saleProducts.forEach(sale -> {
+            int nonDiscountPromotionsCount = countNonDiscountPromotionsMap.get(sale.getName());
+            flag.set(nonDiscountProMotionsQuestion(sale.getName(), nonDiscountPromotionsCount));
         });
 
         return flag.get();
@@ -84,9 +85,9 @@ public class InputView {
         return false;
     }
 
-    private static boolean isPromotionFlag(Set<String> sales, Map<String, Boolean> promotions) {
-        for (String sale : sales) {
-            if (promotions.get(sale)) {
+    private static boolean isPromotionFlag(Set<SaleProduct> saleProducts, Map<String, Boolean> promotions) {
+        for (SaleProduct saleProduct : saleProducts) {
+            if (promotions.get(saleProduct.getName())) {
                 return true;
             }
         }

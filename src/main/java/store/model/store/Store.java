@@ -5,6 +5,7 @@ import store.model.product.Product;
 import store.model.product.Products;
 import store.model.product.Quantity;
 import store.model.promotion.Promotions;
+import store.model.sale.SaleProduct;
 import store.strategy.DateStrategy;
 import store.strategy.DateStrategyImpl;
 
@@ -64,13 +65,16 @@ public class Store {
         return readFile(PRODUCTS_FILE_PATH);
     }
 
-    public Set<String> sale(List<Product> saleProducts) {
-        Set<String> saleProductNames = new HashSet<>();
+    public Set<SaleProduct> sale(List<Product> saleProducts) {
+        Set<SaleProduct> saleProductNames = new LinkedHashSet<>();
+
         for (Product saleProduct : saleProducts) {
             Products products = isValid(saleProduct.getName());
             products.sale(saleProduct.getStoreQuantity());
-            saleProductNames.add(saleProduct.getName());
+            SaleProduct saleProductTarget = new SaleProduct(saleProduct.getName(), Price.from(products.getProducts().get(0).getPrice()), Quantity.from(saleProduct.getSaleQuantity()), products.getProducts().get(0).getPromotionName());
+            saleProductNames.add(saleProductTarget);
         }
+
         return saleProductNames;
     }
 
@@ -89,14 +93,14 @@ public class Store {
         return products;
     }
 
-    public Map<String, Boolean> isPromotions(Set<String> productNames, DateStrategy dateStrategy) {
+    public Map<String, Boolean> isPromotions(Set<SaleProduct> saleProducts, DateStrategy dateStrategy) {
         Map<String, Boolean> isPromotions = new HashMap<>();
 
-        for (String productName : productNames) {
-            Products products = stores.get(productName);
+        for (SaleProduct saleProduct : saleProducts) {
+            Products products = stores.get(saleProduct.getName());
             checkExistsProduct(products);
             boolean promotions = products.isPromotions(dateStrategy);
-            isPromotions.put(productName, promotions);
+            isPromotions.put(saleProduct.getName(), promotions);
         }
 
         return isPromotions;
@@ -108,21 +112,21 @@ public class Store {
         }
     }
 
-    public Map<String, Integer> countNonDiscountPromotions(Set<String> productNames) {
+    public Map<String, Integer> countNonDiscountPromotions(Set<SaleProduct> saleProducts) {
         Map<String, Integer> nonDisCountPromotionsMap = new HashMap<>();
-        for (String productName : productNames) {
-            Products products = stores.get(productName);
-            nonDisCountPromotionsMap.put(productName, products.countNonDiscountPromotions());
+        for (SaleProduct saleProduct : saleProducts) {
+            Products products = stores.get(saleProduct.getName());
+            nonDisCountPromotionsMap.put(saleProduct.getName(), products.countNonDiscountPromotions());
         }
 
         return nonDisCountPromotionsMap;
     }
 
-    public Map<String, Integer> remainCountAvailableDiscountPromotions(Set<String> productNames) {
+    public Map<String, Integer> remainCountAvailableDiscountPromotions(Set<SaleProduct> saleProducts) {
         Map<String, Integer> remainCountAvailableMap = new HashMap<>();
-        for (String productName : productNames) {
-            Products products = stores.get(productName);
-            remainCountAvailableMap.put(productName, products.remainCountAvailableDiscountPromotions());
+        for (SaleProduct saleProduct : saleProducts) {
+            Products products = stores.get(saleProduct.getName());
+            remainCountAvailableMap.put(saleProduct.getName(), products.remainCountAvailableDiscountPromotions());
         }
 
         return remainCountAvailableMap;
